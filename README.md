@@ -1,4 +1,4 @@
-SP_EINK模块使用说明
+# SP_EINK模块使用说明
 
 ## 介绍
 
@@ -64,12 +64,12 @@ SP_EINK模块采用GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥�
 
 ### SPI初始化
 
-UART初始化波特率必须与SP_BT波特率一致，可以使用AT指令改变SP_BT的波特率，这里默认为9600
+
 
 * C示例
 
   ```c
-  spi_init(SPI_INDEX, SPI_WORK_MODE_0, SPI_FF_STANDARD, DATALENGTH, 0);
+  spi_init(1, SPI_WORK_MODE_0, SPI_FF_STANDARD, DATALENGTH, 0);
   ```
 
 * MaixPy示例
@@ -83,67 +83,46 @@ UART初始化波特率必须与SP_BT波特率一致，可以使用AT指令改变
 
 ### 基本指令列表
 
-|       指令        |               功能                |
-| :---------------: | :-------------------------------: |
-| AT+BAUD\<Param\>  | 波特率（0-6）分别代表不同的波特率 |
-| AT+NAME\<Param\>  |              广播名               |
-| AT+SLEEP\<param\> |               睡眠                |
+| 指令 |       功能       |
+| :--: | :--------------: |
+| 0x10 | 开始发送黑白图像 |
+| 0x13 | 开始发送红白图像 |
+| 0x12 |  刷新图像到屏幕  |
 
-*更多AT指令请参考[JDY-23-V2.1.pdf](doc/JDY-23-V2.1.pdf)*
+*更多指令信息参考[GDEW0154M09.pdf](doc/GDEW0154M09.pdf)*
 
-### AT指令使用
+### 使用方式
 
 * 流程
 
-  1. 发送AT指令
-  2. 接收数据
-  3. 判断是否设置成功
+  1. 初始化配置
+  2. 创建Paint并填充图像
+  3. 发送图像并刷新
 
 * C示例
 
   ```c
-  //set the name of sp_bt module to MAIXCUBE
-  uart_send_data(UART_NUM, "AT+NAMEMAIXCUBE\r\n", strlen("AT+NAMEMAIXCUBE\r\n")); //send AT order
-  msleep(100);
-  ret = uart_receive_data(UART_NUM, rcv_buf, sizeof(rcv_buf)); //receive response
-  if(ret != 0 && strstr(rcv_buf, "OK"))
-  {
-     printk(LOG_COLOR_W "set name success!\r\n");
-  }
+  EPD_DisplayInit(); //EPD init
   
-  // get the name of sp_bt module
-  uart_send_data(UART_NUM, "AT+NAME\r\n", strlen("AT+NAME\r\n")); //send AT order
-  msleep(100);
-  ret = uart_receive_data(UART_NUM, rcv_buf, sizeof(rcv_buf)); //receive response
-  if(ret != 0 && strstr(rcv_buf, "NAME"))
-  {
-     printk(LOG_COLOR_W "get name success!\r\n");
-  }
+  //Paint initialization
+  Paint_NewImage(BlackImage, EPD_WIDTH, EPD_HEIGHT, 270, WHITE); //Set screen size and display orientation
+  Paint_SelectImage(BlackImage);                                 //Set the virtual canvas data storage location
+  
+  Paint_Clear(WHITE); //clear paint
+  Paint_DrawString_EN(0, 0, "sipeed", &Font8, WHITE, BLACK);   //5*8
+  Paint_DrawString_EN(0, 10, "sipeed", &Font12, WHITE, BLACK); //7*12
+  Paint_DrawString_EN(0, 25, "sipeed", &Font16, WHITE, BLACK); //11*16
+  Paint_DrawString_EN(0, 45, "sipeed", &Font20, WHITE, BLACK); //14*20
+  Paint_DrawString_EN(0, 80, "sipeed", &Font24, WHITE, BLACK); //17*24
+  EPD_FullDisplay(BlackImage, BlackImage, 0);                  //display image
   ```
-
+  
 * MaixPy示例
 
   ```python
-  #set the name of sp_bt module to MAIXCUBE
-  uart.write("AT+NAMEMAIXCUBE\r\n") #send AT order
-  time.sleep_ms(100)
-  read_data = uart.read() #receive response
-  if read_data:
-      read_str = read_data.decode('utf-8')
-      count = read_str.count("OK")
-      if count != 0:
-          uart.write("set name success\r\n")
+  tmp = EPD(spi1, cs, dc, rst, busy)
   
-  # get the name of sp_bt module
-  uart.write("AT+NAME\r\n") #send AT order
-  time.sleep_ms(100)
-  read_data = uart.read() #receive response
-  if read_data:
-      read_str = read_data.decode('utf-8')
-      count = read_str.count("NAME")
-      if count != 0:
-          uart.write("get name success\r\n")
   ```
 
-*注意发送AT指令后一定要加上\r\n*
+
 
