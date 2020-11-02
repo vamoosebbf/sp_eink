@@ -8,14 +8,11 @@
 
 #define DATALENGTH 8
 
-static uint8_t wb_buf[10000], red_buf[5000];
-
 void EPD_io_mux_init(void)
 {
     fpioa_set_function(SPI_IPS_LCD_CS_PIN_NUM, FUNC_SPI1_SS0);   // CS
     fpioa_set_function(SPI_IPS_LCD_SCK_PIN_NUM, FUNC_SPI1_SCLK); // SCLK
     fpioa_set_function(SPI_IPS_LCD_MOSI_PIN_NUM, FUNC_SPI1_D0);  // MOSI
-    // fpioa_set_function(SPI_IPS_LCD_MISO_PIN_NUM, FUNC_SPI1_D1);  // MISO
 
     fpioa_set_function(SPI_IPS_LCD_DC_PIN_NUM, FUNC_GPIOHS0 + SPI_IPS_LCD_DC_GPIO_NUM);   // D2
     fpioa_set_function(SPI_IPS_LCD_RST_PIN_NUM, FUNC_GPIOHS0 + SPI_IPS_LCD_RST_GPIO_NUM); // D3
@@ -23,13 +20,10 @@ void EPD_io_mux_init(void)
 
     gpiohs_set_drive_mode(SPI_IPS_LCD_DC_GPIO_NUM, GPIO_DM_OUTPUT);
     gpiohs_set_drive_mode(SPI_IPS_LCD_RST_GPIO_NUM, GPIO_DM_OUTPUT);
-    // gpiohs_set_drive_mode(SPI_IPS_LCD_BL_GPIO_NUM, GPIO_DM_OUTPUT);
 
     gpiohs_set_pin(SPI_IPS_LCD_DC_GPIO_NUM, GPIO_PV_HIGH);
     gpiohs_set_pin(SPI_IPS_LCD_RST_GPIO_NUM, GPIO_PV_HIGH);
-    // gpiohs_set_pin(SPI_IPS_LCD_BL_GPIO_NUM, GPIO_PV_HIGH);
 
-    // fpioa_set_function(SPI_IPS_LCD_BL_PIN_NUM, FUNC_GPIOHS2);
     gpiohs_set_drive_mode(SPI_IPS_LCD_BL_PIN_NUM, GPIO_DM_INPUT_PULL_UP);
     gpiohs_set_pin_edge(SPI_IPS_LCD_BL_PIN_NUM, GPIO_PE_BOTH);
 }
@@ -136,8 +130,6 @@ void EPD_CheckStatus(void)
 void EPD_DisplayInit(void)
 {
     EPD_io_mux_init();
-    memset(red_buf, 0xff, 5000);
-    memset(wb_buf, 0xff, 10000);
 
     gpiohs_set_pin(SPI_IPS_LCD_RST_GPIO_NUM, GPIO_PV_LOW);
     msleep(100);
@@ -183,16 +175,15 @@ void EPD_DisplayInit(void)
 }
 
 /////////////////////////////Enter deep sleep mode////////////////////////
-void EPD_DeepSleep(void) //Enter deep sleep mode
+void EPD_Sleep(void) //Enter deep sleep mode
 {
-    EPD_W21_WriteCMD(0X50);
-    EPD_W21_WriteDATA(0xf7);
+    EPD_W21_WriteCMD(0X50);  //VCOM AND DATA INTERVAL SETTING
+    EPD_W21_WriteDATA(0xf7); //WBmode:VBDF 17|D7 VBDW 97 VBDB 57		WBRmode:VBDF F7 VBDW 77 VBDB 37  VBDR B7
+
     EPD_W21_WriteCMD(0X02); //power off
-    msleep(100);
-    EPD_CheckStatus();
+    EPD_CheckStatus();      //waiting for the electronic paper IC to release the idle signal
     EPD_W21_WriteCMD(0X07); //deep sleep
     EPD_W21_WriteDATA(0xA5);
-    msleep(3000);
 }
 
 /***************************full display function*************************************/
@@ -284,49 +275,3 @@ void EPD_FullDisplay(const unsigned char *old_data, const unsigned char *new_dat
     msleep(100);            //!!!The delay here is necessary, 200uS at least!!!
     EPD_CheckStatus();
 }
-
-// /***************************partial display function*************************************/
-
-// void partial_display(uint16_t x_start, uint16_t x_end, uint16_t y_start, uint16_t y_end, const unsigned char *old_data, const unsigned char *new_data, unsigned char mode) //partial display
-// {
-//     unsigned datas, i;
-//     EPD_W21_WriteCMD(0X50);
-//     EPD_W21_WriteDATA(0x97);
-//     lut1();
-
-//     EPD_W21_WriteCMD(0x91);       //This command makes the display enter partial mode
-//     EPD_W21_WriteCMD(0x90);       //resolution setting
-//     EPD_W21_WriteDATA(x_start);   //x-start
-//     EPD_W21_WriteDATA(x_end - 1); //x-end
-//     EPD_W21_WriteDATA(0);         //x Reserved
-
-//     EPD_W21_WriteDATA(y_start); //y-start
-//     EPD_W21_WriteDATA(0);       //y Reserved
-//     EPD_W21_WriteDATA(y_end);   //y-end
-//     EPD_W21_WriteDATA(0x01);
-//     datas = (x_end - x_start) * (y_end - y_start) / 8;
-
-//     EPD_W21_WriteCMD(0x10); //writes Old data to SRAM for programming
-//     if(mode == 0)
-//     {
-//         for(i = 0; i < datas; i++)
-//         {
-//             EPD_W21_WriteDATA(0xff);
-//         }
-//     } else
-//     {
-//         for(i = 0; i < datas; i++)
-//         {
-//             EPD_W21_WriteDATA(old_data[i]);
-//         }
-//     }
-//     EPD_W21_WriteCMD(0x13); //writes New data to SRAM.
-//     for(i = 0; i < datas; i++)
-//     {
-//         EPD_W21_WriteDATA(new_data[i]);
-//     }
-
-//     EPD_W21_WriteCMD(0x12); //DISPLAY REFRESH
-//     msleep(100);            //!!!The delay here is necessary, 200uS at least!!!
-//     EPD_CheckStatus();
-// }

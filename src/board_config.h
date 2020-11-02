@@ -13,13 +13,14 @@
 #define BOARD_MAIX_NEW_GO 7
 
 #define BOARD BOARD_MAIX_M1N
-#define BOARD_NAME "BOARD_MAIX_M1N"
+#define BOARD_NAME "BOARD_MAIX_CUBE"
 
 #if((BOARD == BOARD_MAIX_CUBE) || (BOARD == BOARD_MAIX_M1N))
 
 #define SPI_INDEX 1
 #define SPI_SCLK_RATE 600 * 1000
 #define SPI_CHIP_SELECT_NSS 0 //SPI_CHIP_SELECT_0
+
 // SPMOD Interface
 // # [4|5] [7  |VCC] [RST|3V3]
 // # [3|6] [15 | 21] [D/C|SCK]
