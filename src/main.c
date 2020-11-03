@@ -34,7 +34,6 @@ void epd_test(void)
 
     //Paint initialization
     Paint_NewImage(BlackImage, EPD_WIDTH, EPD_HEIGHT, 270, WHITE); //Set screen size and display orientation
-    Paint_SelectImage(BlackImage);                                 //Set the virtual canvas data storage location
 
     Paint_Clear(WHITE);
     //Point

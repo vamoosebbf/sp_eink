@@ -16,7 +16,7 @@ SP_EINK模块采用GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥�
 |   SCK    |   SCK   |
 |   MOSI   |   SI    |
 |   BSY    |   BSY   |
-| 1.8-3.3V |  3.3V   |
+| 2.3-3.6V |  3.3V   |
 |   GND    |   GND   |
 
 
@@ -83,11 +83,11 @@ SP_EINK模块采用GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥�
 
 ### 基本指令列表
 
-| 指令 |       功能       |
-| :--: | :--------------: |
-| 0x10 | 开始发送黑白图像 |
-| 0x13 | 开始发送红白图像 |
-| 0x12 |  刷新图像到屏幕  |
+| 指令  |       功能       |
+| :---: | :--------------: |
+| 0x10  | 开始发送黑白图像 |
+| 0x13  | 开始发送红白图像 |
+| 0x12  |  刷新图像到屏幕  |
 
 *更多指令信息参考[GDEW0154M09.pdf](doc/GDEW0154M09.pdf)*
 
@@ -120,7 +120,17 @@ SP_EINK模块采用GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥�
 * MaixPy示例
 
   ```python
-  tmp = EPD(spi1, cs, dc, rst, busy)
+  epd = EPD(spi1, cs, dc, rst, busy)
+
+  epd.init()
+  img = image.Image()
+  img = img.resize(200, 200)
+
+  img.draw_line(0, 0, 100, 100)
+  img.draw_circle(50, 50, 20)
+  img.draw_rectangle(80, 80, 30, 30)
+
+  epd.display(img)
   
   ```
 
