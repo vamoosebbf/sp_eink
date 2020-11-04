@@ -107,7 +107,7 @@ class EPD:
         img1 = image.Image()
         img1 = img1.resize(EPD_WIDTH, EPD_HEIGHT)
         img1.draw_image(img, 0, 0)
-        # img1.rotation_corr(y_rotation=180)
+        img1.rotation_corr(y_rotation=180,fov=2)
         img_bytes = img1.to_bytes()  # 共80000个字节
         self._command(0x13)  # 开始传输红图像 0x00:red,0xff:white
         for i in range(0, 79999, 16):  # 两个字节对应转化后一个位，16个字节对应转化后一个字节，所以转化后共5000个字节
