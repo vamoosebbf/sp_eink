@@ -105,7 +105,7 @@ class EPD:
     def display(self, img):
         self._command(0x10)  # 开始传输黑白图像 0x00:black
         img1 = image.Image()
-        img1 = img1.resize(200, 200)
+        img1 = img1.resize(EPD_WIDTH, EPD_HEIGHT)
         img1.draw_image(img, 0, 0)
         # img1.rotation_corr(y_rotation=180)
         img_bytes = img1.to_bytes()  # 共80000个字节
