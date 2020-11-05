@@ -1,4 +1,3 @@
-
 from micropython import const
 from time import sleep_ms
 import ustruct
@@ -7,8 +6,6 @@ import image
 # Display resolution
 EPD_WIDTH = const(200)
 EPD_HEIGHT = const(200)
-
-
 BUSY = const(1)  # 1=busy, 0=idle
 
 
@@ -103,20 +100,26 @@ class EPD:
         self.lut_red()
 
     def display(self, img):
-        self._command(0x10)  # 开始传输黑白图像 0x00:black
-        img1 = image.Image()
+        self._command(0x10)  # write "B/W" data to SRAM. 0x00:black
+        for i in range(10000):
+            self._data(0xff)
+
+        img1 = image.Image()  # handle image
         img1 = img1.resize(self.width, self.height)
         img1.draw_image(img, 0, 0)
-        img1.rotation_corr(y_rotation=180,fov=2)
-        img_bytes = img1.to_bytes()  # 共80000个字节
-        self._command(0x13)  # 开始传输红图像 0x00:red,0xff:white
-        for i in range(0, 79999, 16):  # 两个字节对应转化后一个位，16个字节对应转化后一个字节，所以转化后共5000个字节
+        # Parameter 'fov' is to slove data loss issues
+        img1.rotation_corr(x_rotation=180, fov=2)
+        img_bytes = img1.to_bytes()  # That's "self.width*self.height*2" bytes
+
+        self._command(0x13)  # write "RED" data to SRAM 0x00:red,0xff:white
+        for i in range(0, self.width*self.height*2, 16):
             b = 0
             for j in range(0, 15, 2):
                 if img_bytes[i+j] or img_bytes[i+j+1]:
                     b = b | (0x80 >> j//2)
             self._data(~b)
-        self._command(0x12)
+
+        self._command(0x12)  # display refresh
         self.wait_until_idle()
 
     def wait_until_idle(self):
@@ -142,9 +145,8 @@ class EPD:
         self._command(0x26, EPD.lut_red0)
         self._command(0x27, EPD.lut_red1)
 
-    # to wake call reset() or init()
+    # enter deep sleep A0=1, A0=0 power on
     def sleep(self):
-        # enter deep sleep A0=1, A0=0 power on
         self._command(0x50)
         self._data(0xf7)
 
@@ -191,14 +193,14 @@ if __name__ == "__main__":
 
     lcd.init()
     epd = EPD(spi1, cs, dc, rst, busy, EPD_WIDTH, EPD_HEIGHT)
-
     epd.init()
+
     img = image.Image()
     img = img.resize(200, 200)
-
     img.draw_line(0, 0, 100, 100)
     img.draw_circle(50, 50, 20)
     img.draw_rectangle(80, 80, 30, 30)
 
     epd.display(img)
+    epd.sleep()
     lcd.display(img)
