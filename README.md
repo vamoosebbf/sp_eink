@@ -2,7 +2,7 @@
 
 ## 介绍
 
-SP_EINK模块采用GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥有 24P FPC(0.5mm 间距)接口的电子墨水屏。拥有超广可视角。该模块使用SP_MOD SPI接口与开发板相连，更多详细特性参考[SP-EINK规格书V1.0.pdf](doc/SP-EINK规格书V1.0.pdf)
+SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥有 24P FPC(0.5mm 间距)接口的电子墨水屏。拥有超广可视角。该模块使用SP_MOD SPI 接口与开发板相连，更多详细特性参考[SP-EINK规格书V1.0.pdf](doc/SP-EINK规格书V1.0.pdf)
 
 <img src="img/sp_eink.png" style="zoom:50%;" >
 
@@ -21,13 +21,13 @@ SP_EINK模块采用GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥�
 
 
 
-## MCU端口配置
+## MCU 端口配置
 
-### IO口配置
+### IO 口配置
 
-将原理图对应的IO口配置为SPI功能
+将原理图对应的 IO 口配置为 SPI 功能
 
-* C示例
+* C 示例
 
   ```c
   fpioa_set_function(SPI_IPS_LCD_CS_PIN_NUM, FUNC_SPI1_SS0);   // CS
@@ -48,7 +48,7 @@ SP_EINK模块采用GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥�
   gpiohs_set_pin_edge(SPI_IPS_LCD_BL_PIN_NUM, GPIO_PE_BOTH);
   ```
 
-* MaixPy示例
+* MaixPy 示例
 
   ```python
   fm.register(20, fm.fpioa.GPIOHS20, force=True) # #define SPI_IPS_LCD_SS_PIN_NUM 20
@@ -62,17 +62,17 @@ SP_EINK模块采用GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥�
   rst = GPIO(GPIO.GPIOHS7, GPIO.OUT)
   ```
 
-### SPI初始化
+### SPI 初始化
 
 
 
-* C示例
+* C 示例
 
   ```c
   spi_init(1, SPI_WORK_MODE_0, SPI_FF_STANDARD, DATALENGTH, 0);
   ```
 
-* MaixPy示例
+* MaixPy 示例
 
   ```python
   spi1 = SPI(SPI.SPI1, mode=SPI.MODE_MASTER, baudrate=600 * 1000,
@@ -96,10 +96,10 @@ SP_EINK模块采用GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥�
 * 流程
 
   1. 初始化配置
-  2. 创建Paint并填充图像
+  2. 创建 paint 并填充图像
   3. 发送图像并刷新
 
-* C示例
+* C 示例
 
   ```c
   EPD_DisplayInit(); //EPD init
@@ -117,7 +117,7 @@ SP_EINK模块采用GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥�
   EPD_FullDisplay(BlackImage, BlackImage, 0);                  //display image
   ```
   
-* MaixPy示例
+* MaixPy 示例
 
   ```python
   epd = EPD(spi1, cs, dc, rst, busy)
@@ -134,6 +134,13 @@ SP_EINK模块采用GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥�
   
   ```
 
+  ## 运行环境
+
+|  语言  |  开发板  |          SDK/固件版本          |
+| :----: | :------: | :----------------------------: |
+|   C    | MaixCube | kendryte-standalone-sdk v0.5.6 |
+| MaixPy | MaixCube |         maixpy v0.5.1          |
+
 ### 运行结果
 
 * C
@@ -144,3 +151,6 @@ SP_EINK模块采用GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥�
 
   <img src="img/sp_eink_py.jpg" alt="sp_eink_py" style="zoom: 67%;" />
 
+## LICENSE
+
+See [LICENSE](LICENSE.md) file
