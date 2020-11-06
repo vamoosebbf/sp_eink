@@ -21,7 +21,9 @@ SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥
 | 2.3-3.6V |  3.3V   |
 |   GND    |   GND   |
 
+## 引脚图
 
+<img src="img/sp_eink_back.jpg" style="zoom: 67%;" />
 
 ## MCU 端口配置
 
@@ -65,8 +67,6 @@ SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥
   ```
 
 ### SPI 初始化
-
-
 
 * C 示例
 
