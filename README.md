@@ -1,6 +1,6 @@
 <img src="img/icon_sipeed2.png" style="zoom:80%;" />
 
-# SP_EINK模块使用说明
+# SP_EINK 模块使用说明
 
 ## 介绍
 
