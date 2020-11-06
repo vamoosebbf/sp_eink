@@ -143,6 +143,8 @@ SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥
 |   C    | MaixCube | kendryte-standalone-sdk v0.5.6 |
 | MaixPy | MaixCube |         maixpy v0.5.1          |
 
+*MaixPy固件建议自行从最新源码编译*
+
 ### 运行结果
 
 * C
