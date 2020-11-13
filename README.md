@@ -5,6 +5,7 @@
 [中文](README_CN.md)
 
 ## Directory Structure
+
 | Directory | Description                                   |
 | :-------: | :-------------------------------------------- |
 |    doc    | Reference documentation                       |
@@ -22,6 +23,8 @@ SP_EINK module USES GDEW0154M09, which is a 1.54 ", SPI interface control, with 
 
 ## Mode of connection
 
+<img src="img/connection.png" height="200">
+
 |   MCU    | SP_EINK |
 | :------: | :-----: |
 |   RES    |   RES   |
@@ -35,7 +38,7 @@ SP_EINK module USES GDEW0154M09, which is a 1.54 ", SPI interface control, with 
 
 ## Pin figure
 
-<img src="img/sp_eink_back.jpg" height="300" />
+<img src="img/sp_eink_back.png" height="300" />
 
 ## MCU configuration
 
@@ -161,11 +164,11 @@ Configure the IO port corresponding to the schematic diagram as SPI function
 
 * C
 
-  <img src="img/sp_eink_c.jpg" height="250" />
+  <img src="img/sp_eink_c.png" height="250" />
 
 * MaixPy
 
-  <img src="img/sp_eink_py.jpg" alt="sp_eink_py" height="250" />
+  <img src="img/sp_eink_py.png" alt="sp_eink_py" height="250" />
 
 ## LICENSE
 
