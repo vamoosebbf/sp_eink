@@ -171,19 +171,19 @@ if __name__ == "__main__":
     # #  # [2|7] [20 |  8] [CS |SI ]
     # #  # [1|8] [GND|  6] [GND|BL ]
 
-    # #define SPI_IPS_LCD_CS_PIN_NUM 20
-    # #define SPI_IPS_LCD_SCK_PIN_NUM 21
-    # #define SPI_IPS_LCD_MOSI_PIN_NUM 8
+    # #define SPI_EINK_CS_PIN_NUM 20
+    # #define SPI_EINK_SCK_PIN_NUM 21
+    # #define SPI_EINK_MOSI_PIN_NUM 8
     spi1 = SPI(SPI.SPI1, mode=SPI.MODE_MASTER, baudrate=600 * 1000,
                polarity=0, phase=0, bits=8, firstbit=SPI.MSB, sck=21, mosi=8)
 
-    # define SPI_IPS_LCD_SS_PIN_NUM 20
+    # define SPI_EINK_SS_PIN_NUM 20
     fm.register(20, fm.fpioa.GPIOHS20, force=True)
-    # define SPI_IPS_LCD_DC_PIN_NUM 15
+    # define SPI_EINK_DC_PIN_NUM 15
     fm.register(15, fm.fpioa.GPIOHS15, force=True)
-    # define SPI_IPS_LCD_BUSY_PIN_NUM 6
+    # define SPI_EINK_BUSY_PIN_NUM 6
     fm.register(6, fm.fpioa.GPIOHS6, force=True)
-    # define SPI_IPS_LCD_RST_PIN_NUM 7
+    # define SPI_EINK_RST_PIN_NUM 7
     fm.register(7, fm.fpioa.GPIOHS7, force=True)
 
     cs = GPIO(GPIO.GPIOHS20, GPIO.OUT)

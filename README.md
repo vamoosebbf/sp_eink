@@ -25,16 +25,16 @@ SP_EINK module USES GDEW0154M09, which is a 1.54 ", SPI interface control, with 
 
 <img src="img/connection.png" height="200">
 
-|   MCU    | SP_EINK |
-| :------: | :-----: |
-|   RES    |   RES   |
-|   D/C    |   D/C   |
-|    CS    |   CS    |
-|   SCK    |   SCK   |
-|   MOSI   |   SI    |
-|   BSY    |   BSY   |
-| 2.3-3.6V |  3.3V   |
-|   GND    |   GND   |
+|  MCU:FUN(IO)   | SP_EINK |
+| :------------: | :-----: |
+|  GPIOHS(IO_7)  |   RES   |
+| SPIOHS(IO_15)  |   D/C   |
+| SPIOHS(IO_20)  |   CS    |
+| SPI:SCK(IO_21) |   SCK   |
+| SPI:MOSI(IO_8) |   SI    |
+|  GPIOHS(IO_6)  |   BSY   |
+|    2.3-3.6V    |  3.3V   |
+|      GND       |   GND   |
 
 ## Pin figure
 
@@ -49,31 +49,31 @@ Configure the IO port corresponding to the schematic diagram as SPI function
 * C
 
   ```c
-  fpioa_set_function(SPI_IPS_LCD_CS_PIN_NUM, FUNC_SPI1_SS0);   // CS
-  fpioa_set_function(SPI_IPS_LCD_SCK_PIN_NUM, FUNC_SPI1_SCLK); // SCLK
-  fpioa_set_function(SPI_IPS_LCD_MOSI_PIN_NUM, FUNC_SPI1_D0);  // MOSI
+  fpioa_set_function(SPI_EINK_CS_PIN_NUM, FUNC_SPI1_SS0);   // SPI_EINK_CS_PIN_NUM: 20; 
+  fpioa_set_function(SPI_EINK_SCK_PIN_NUM, FUNC_SPI1_SCLK); // SPI_EINK_SCK_PIN_NUM: 21;
+  fpioa_set_function(SPI_EINK_MOSI_PIN_NUM, FUNC_SPI1_D0);  // SPI_EINK_MOSI_PIN_NUM: 8;
   
-  fpioa_set_function(SPI_IPS_LCD_DC_PIN_NUM, FUNC_GPIOHS0 + SPI_IPS_LCD_DC_GPIO_NUM);   // D2
-  fpioa_set_function(SPI_IPS_LCD_RST_PIN_NUM, FUNC_GPIOHS0 + SPI_IPS_LCD_RST_GPIO_NUM); // D3
-  fpioa_set_function(SPI_IPS_LCD_BL_PIN_NUM, FUNC_GPIOHS0 + SPI_IPS_LCD_BL_GPIO_NUM);   // D2
+  fpioa_set_function(SPI_EINK_DC_PIN_NUM, FUNC_GPIOHS0 + SPI_EINK_DC_GPIO_NUM);   // SPI_EINK_DC_PIN_NUM: 21;
+  fpioa_set_function(SPI_EINK_RST_PIN_NUM, FUNC_GPIOHS0 + SPI_EINK_RST_GPIO_NUM); // SPI_EINK_RST_PIN_NUM: 7;
+  fpioa_set_function(SPI_EINK_BL_PIN_NUM, FUNC_GPIOHS0 + SPI_EINK_BL_GPIO_NUM);   // SPI_EINK_BL_PIN_NUM: 6;
   
-  gpiohs_set_drive_mode(SPI_IPS_LCD_DC_GPIO_NUM, GPIO_DM_OUTPUT);
-  gpiohs_set_drive_mode(SPI_IPS_LCD_RST_GPIO_NUM, GPIO_DM_OUTPUT);
+  gpiohs_set_drive_mode(SPI_EINK_DC_GPIO_NUM, GPIO_DM_OUTPUT);
+  gpiohs_set_drive_mode(SPI_EINK_RST_GPIO_NUM, GPIO_DM_OUTPUT);
   
-  gpiohs_set_pin(SPI_IPS_LCD_DC_GPIO_NUM, GPIO_PV_HIGH);
-  gpiohs_set_pin(SPI_IPS_LCD_RST_GPIO_NUM, GPIO_PV_HIGH);
+  gpiohs_set_pin(SPI_EINK_DC_GPIO_NUM, GPIO_PV_HIGH);
+  gpiohs_set_pin(SPI_EINK_RST_GPIO_NUM, GPIO_PV_HIGH);
   
-  gpiohs_set_drive_mode(SPI_IPS_LCD_BL_PIN_NUM, GPIO_DM_INPUT_PULL_UP);
-  gpiohs_set_pin_edge(SPI_IPS_LCD_BL_PIN_NUM, GPIO_PE_BOTH);
+  gpiohs_set_drive_mode(SPI_EINK_BL_PIN_NUM, GPIO_DM_INPUT_PULL_UP);
+  gpiohs_set_pin_edge(SPI_EINK_BL_PIN_NUM, GPIO_PE_BOTH);
   ```
 
 * MaixPy
 
   ```python
-  fm.register(20, fm.fpioa.GPIOHS20, force=True) # #define SPI_IPS_LCD_SS_PIN_NUM 20
-  fm.register(15, fm.fpioa.GPIOHS15, force=True) # #define SPI_IPS_LCD_DC_PIN_NUM 15
-  fm.register(6, fm.fpioa.GPIOHS6, force=True) # #define SPI_IPS_LCD_BUSY_PIN_NUM 6
-  fm.register(7, fm.fpioa.GPIOHS7, force=True) # #define SPI_IPS_LCD_RST_PIN_NUM 7
+  fm.register(20, fm.fpioa.GPIOHS20, force=True) # SPI_EINK_SS_PIN_NUM: 20;
+  fm.register(15, fm.fpioa.GPIOHS15, force=True) # SPI_EINK_DC_PIN_NUM: 15;
+  fm.register(6, fm.fpioa.GPIOHS6, force=True) # SPI_EINK_BUSY_PIN_NUM: 6;
+  fm.register(7, fm.fpioa.GPIOHS7, force=True) # SPI_EINK_RST_PIN_NUM: 7;
   
   cs = GPIO(GPIO.GPIOHS20, GPIO.OUT)
   dc = GPIO(GPIO.GPIOHS15, GPIO.OUT)
