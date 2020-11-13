@@ -1,14 +1,26 @@
 <img src="img/icon_sipeed2.png" style="zoom:80%;" />
 
-# SP_EINK 模块使用说明
+# SP_EINK Module User Guide
 
-## 介绍
+[中文](README_CN.md)
 
-SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥有 24P FPC(0.5mm 间距)接口的电子墨水屏。拥有超广可视角。该模块使用SP_MOD SPI 接口与开发板相连，更多详细特性参考[SP-EINK规格书V1.0.pdf](doc/SP-EINK规格书V1.0.pdf)
+## Directory Structure
+| Directory | Description                                   |
+| :-------: | :-------------------------------------------- |
+|    doc    | Reference documentation                       |
+|    img    | Images                                        |
+|  script   | Maixpy script example                         |
+|    src    | C program example based on the standalone sdk |
 
-<img src="img/sp_eink.png" style="zoom:50%;" >
+## Introduce
 
-## 接线方式
+SP_EINK module USES GDEW0154M09, which is a 1.54 ", SPI interface control, with 24P FPC(0.5mm spacing) interface e-ink screen. Has a wide range of views. This module uses the SP_MOD SPI interface to connect to mcu.
+
+<img src="img/sp_eink.png" height="400" >
+
+*See [SP-EINK规格书V1.0.pdf](doc/SP-EINK规格书V1.0.pdf) for more information.*
+
+## Mode of connection
 
 |   MCU    | SP_EINK |
 | :------: | :-----: |
@@ -21,17 +33,17 @@ SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥
 | 2.3-3.6V |  3.3V   |
 |   GND    |   GND   |
 
-## 引脚图
+## Pin figure
 
-<img src="img/sp_eink_back.jpg" style="zoom: 67%;" />
+<img src="img/sp_eink_back.jpg" height="300" />
 
-## MCU 端口配置
+## MCU configuration
 
-### IO 口配置
+### IO Port configuration
 
-将原理图对应的 IO 口配置为 SPI 功能
+Configure the IO port corresponding to the schematic diagram as SPI function
 
-* C 示例
+* C
 
   ```c
   fpioa_set_function(SPI_IPS_LCD_CS_PIN_NUM, FUNC_SPI1_SS0);   // CS
@@ -52,7 +64,7 @@ SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥
   gpiohs_set_pin_edge(SPI_IPS_LCD_BL_PIN_NUM, GPIO_PE_BOTH);
   ```
 
-* MaixPy 示例
+* MaixPy
 
   ```python
   fm.register(20, fm.fpioa.GPIOHS20, force=True) # #define SPI_IPS_LCD_SS_PIN_NUM 20
@@ -66,42 +78,42 @@ SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥
   rst = GPIO(GPIO.GPIOHS7, GPIO.OUT)
   ```
 
-### SPI 初始化
+### SPI initalization
 
-* C 示例
+* C
 
   ```c
   spi_init(1, SPI_WORK_MODE_0, SPI_FF_STANDARD, DATALENGTH, 0);
   ```
 
-* MaixPy 示例
+* MaixPy
 
   ```python
   spi1 = SPI(SPI.SPI1, mode=SPI.MODE_MASTER, baudrate=600 * 1000,
               polarity=0, phase=0, bits=8, firstbit=SPI.MSB, sck=21, mosi=8)
   ```
 
-## SP_EINK 配置
+## SP_EINK configuration
 
-### 基本指令列表
+### AT instruction list
 
-| 指令  |       功能       |
-| :---: | :--------------: |
-| 0x10  | 开始发送黑白图像 |
-| 0x13  | 开始发送红白图像 |
-| 0x12  |  刷新图像到屏幕  |
+| Instruction |       description        |
+| :---------: | :----------------------: |
+|    0x10     | start transport b/w data |
+|    0x13     | start transport r/w data |
+|    0x12     |  refresh data to screen  |
 
-*更多指令信息参考[GDEW0154M09.pdf](doc/GDEW0154M09.pdf)*
+*See [GDEW0154M09.pdf](doc/GDEW0154M09.pdf) for more information*
 
-### 使用方式
+### Method of application
 
-* 流程
+* Process
 
-  1. 初始化配置
-  2. 创建 paint 并填充图像
-  3. 发送图像并刷新
+  1. initializatin
+  2. create a image and fill it
+  3. send image and refresh
 
-* C 示例
+* C
 
   ```c
   EPD_DisplayInit(); //EPD init
@@ -119,7 +131,7 @@ SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥
   EPD_FullDisplay(BlackImage, BlackImage, 0);                  //display image
   ```
   
-* MaixPy 示例
+* MaixPy
 
   ```python
   epd = EPD(spi1, cs, dc, rst, busy)
@@ -136,25 +148,31 @@ SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥
   
   ```
 
-  ## 运行环境
+## Runtime enviroments
 
-|  语言  |  开发板  |          SDK/固件版本          |
-| :----: | :------: | :----------------------------: |
-|   C    | MaixCube | kendryte-standalone-sdk v0.5.6 |
-| MaixPy | MaixCube |         maixpy v0.5.1          |
+| Language |  Boards  |      SDK/firmware version      |
+| :------: | :------: | :----------------------------: |
+|    C     | MaixCube | kendryte-standalone-sdk v0.5.6 |
+|  MaixPy  | MaixCube |         maixpy v0.5.1          |
 
-*MaixPy固件建议自行从最新源码编译*
+*The MaixPy firmware is recommended to compile from the latest source*
 
-### 运行结果
+### Result
 
 * C
 
-  <img src="img/sp_eink_c.jpg" style="zoom:67%;" />
+  <img src="img/sp_eink_c.jpg" height="250" />
 
 * MaixPy
 
-  <img src="img/sp_eink_py.jpg" alt="sp_eink_py" style="zoom: 67%;" />
+  <img src="img/sp_eink_py.jpg" alt="sp_eink_py" height="250" />
 
 ## LICENSE
 
 See [LICENSE](LICENSE.md) file
+
+## Othre information
+
+| Version |   Editor   |
+| :-----: | :--------: |
+|  v0.1   | vamoosebbf |
