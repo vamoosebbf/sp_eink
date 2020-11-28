@@ -15,15 +15,19 @@
 
 ## Introduce
 
-SP_EINK module USES GDEW0154M09, which is a 1.54 ", SPI interface control, with 24P FPC(0.5mm spacing) interface e-ink screen. Has a wide range of views. This module uses the SP_MOD SPI interface to connect to mcu.
+<img src="img/sp_eink.png" style="padding-right:100px;" align="right" width="500"/>
 
-<img src="img/sp_eink.png" height="400" >
+SP_EINK module USES GDEW0154M09, which is a 1.54 ", SPI interface control, with 24P FPC(0.5mm spacing) interface e-ink screen. Has a wide range of views. This module uses the SP_MOD SPI interface to connect to mcu.
 
 *See [SP-EINK规格书V1.0.pdf](doc/SP-EINK规格书V1.0.pdf) for more information.*
 
+## Pin figure
+
+<img src="img/sp_eink_back.png" height="300" />
+
 ## Mode of connection
 
-<img src="img/connection.png" height="200">
+<img src="img/connection.png" height="250">
 
 |  MCU:FUN(IO)   | SP_EINK |
 | :------------: | :-----: |
@@ -35,10 +39,6 @@ SP_EINK module USES GDEW0154M09, which is a 1.54 ", SPI interface control, with 
 |  GPIOHS(IO_6)  |   BSY   |
 |    2.3-3.6V    |  3.3V   |
 |      GND       |   GND   |
-
-## Pin figure
-
-<img src="img/sp_eink_back.png" height="300" />
 
 ## MCU configuration
 

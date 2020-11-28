@@ -15,15 +15,19 @@
 
 ## 介绍
 
-SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥有 24P FPC(0.5mm 间距)接口的电子墨水屏。拥有超广可视角。该模块使用SP_MOD SPI 接口与开发板相连.
+<img src="img/sp_eink.png" style="padding-right:100px;" align="right" width="500"/>
 
-<img src="img/sp_eink.png" height="400">
+SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥有 24P FPC(0.5mm 间距)接口的电子墨水屏。拥有超广可视角。该模块使用SP_MOD SPI 接口与开发板相连.
 
 *更多详细特性参考[SP-EINK规格书V1.0.pdf](doc/SP-EINK规格书V1.0.pdf)*
 
+## 引脚图
+
+<img src="img/sp_eink_back.png" height="300" />
+
 ## 接线方式
 
-<img src="img/connection.png" height="200">
+<img src="img/connection.png" height="250">
 
 |  MCU:FUN(IO)   | SP_EINK |
 | :------------: | :-----: |
@@ -35,10 +39,6 @@ SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥
 |  GPIOHS(IO_6)  |   BSY   |
 |    2.3-3.6V    |  3.3V   |
 |      GND       |   GND   |
-
-## 引脚图
-
-<img src="img/sp_eink_back.png" height="300" />
 
 ## MCU 配置
 
