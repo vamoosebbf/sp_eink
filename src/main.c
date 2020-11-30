@@ -18,17 +18,18 @@
 #include "board_config.h"
 #include "syslog.h"
 
-#include "epd/demo.h"
 #include "epd/epd.h"
 #include "fpioa.h"
 #include "gpiohs.h"
 #include "uarths.h"
 #include "gui/gui_paint.h"
 
-unsigned char BlackImage[5000]; //Define canvas space
+unsigned char BlackImage[EPD_WIDTH * EPD_HEIGHT / 8]; //Define canvas space
 
 void epd_test(void)
 {
+
+    EPD_io_mux_init();
 
     EPD_DisplayInit(); //EPD init
 
@@ -42,8 +43,8 @@ void epd_test(void)
     Paint_DrawPoint(5, 40, BLACK, DOT_PIXEL_3X3, DOT_STYLE_DFT);
     Paint_DrawPoint(5, 55, BLACK, DOT_PIXEL_4X4, DOT_STYLE_DFT);
     //Line
-    Paint_DrawLine(20, 10, 70, 60, BLACK, LINE_STYLE_SOLID, DOT_PIXEL_1X1);
-    Paint_DrawLine(70, 10, 20, 60, BLACK, LINE_STYLE_SOLID, DOT_PIXEL_1X1);
+    Paint_DrawLine(20, 10, 70, 200, BLACK, LINE_STYLE_SOLID, DOT_PIXEL_1X1);
+    Paint_DrawLine(70, 10, 20, 200, BLACK, LINE_STYLE_SOLID, DOT_PIXEL_1X1);
     //Rectangle
     Paint_DrawRectangle(20, 10, 70, 60, BLACK, DRAW_FILL_EMPTY, DOT_PIXEL_1X1);
     Paint_DrawRectangle(85, 10, 130, 60, BLACK, DRAW_FILL_FULL, DOT_PIXEL_1X1);
@@ -51,7 +52,9 @@ void epd_test(void)
     Paint_DrawCircle(30, 120, 25, BLACK, DRAW_FILL_EMPTY, DOT_PIXEL_1X1);
     Paint_DrawCircle(100, 120, 25, BLACK, DRAW_FILL_FULL, DOT_PIXEL_1X1);
     EPD_FullDisplay(BlackImage, BlackImage, 0);
+    EPD_Sleep(); //epd_sleep,Sleep instruction is necessary, please do not delete!!!
 
+    EPD_DisplayInit(); //EPD initd
     Paint_Clear(WHITE);
     Paint_DrawString_EN(0, 0, "sipeed", &Font8, WHITE, BLACK);   //5*8
     Paint_DrawString_EN(0, 10, "sipeed", &Font12, WHITE, BLACK); //7*12
@@ -59,7 +62,10 @@ void epd_test(void)
     Paint_DrawString_EN(0, 45, "sipeed", &Font20, WHITE, BLACK); //14*20
     Paint_DrawString_EN(0, 80, "sipeed", &Font24, WHITE, BLACK); //17*24
     EPD_FullDisplay(BlackImage, BlackImage, 0);                  //display image
+    EPD_Sleep(); //epd_sleep,Sleep instruction is necessary, please do not delete!!!
 
+
+    EPD_DisplayInit(); //EPD init
     Paint_Clear(WHITE);
     Paint_DrawNum(0, 0, 123456789, &Font8, WHITE, BLACK);   //5*8
     Paint_DrawNum(0, 10, 123456789, &Font12, WHITE, BLACK); //7*12
@@ -67,7 +73,6 @@ void epd_test(void)
     Paint_DrawNum(0, 45, 123456789, &Font20, WHITE, BLACK); //14*20
     Paint_DrawNum(0, 70, 123456789, &Font24, WHITE, BLACK); //17*24
     EPD_FullDisplay(BlackImage, BlackImage, 0);
-
     EPD_Sleep(); //epd_sleep,Sleep instruction is necessary, please do not delete!!!
 }
 

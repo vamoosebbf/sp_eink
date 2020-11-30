@@ -157,7 +157,7 @@ void Paint_SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
 
     Addr = X / 8 + Y * Paint.WidthByte;
     Rdata = Paint.Image[Addr];
-    if (Color == BLACK)
+    if (Color == 0x00)
         Paint.Image[Addr] = Rdata & ~(0x80 >> (X % 8));
     else
         Paint.Image[Addr] = Rdata | (0x80 >> (X % 8));

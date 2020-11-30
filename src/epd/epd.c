@@ -1,10 +1,10 @@
 #include "board_config.h"
-#include "Ap_29demo.h"
 #include "epd.h"
 #include "fpioa.h"
 #include "gpiohs.h"
 #include "sleep.h"
 #include "spi.h"
+#include "../gui/gui_paint.h"
 
 #define DATALENGTH 8
 
@@ -64,63 +64,6 @@ static void EPD_W21_WriteDATA(uint8_t data)
     spi_send_data_standard(SPI_INDEX, SPI_CHIP_SELECT_NSS, cmd, 1, NULL, 0);
 }
 
-uint8_t k = 1;
-void lut_bw(void)
-{
-    unsigned int count;
-    EPD_W21_WriteCMD(0x20);
-    for (count = 0; count < 15; count++)
-    {
-        EPD_W21_WriteDATA(lut_vcom0[count]);
-    }
-
-    EPD_W21_WriteCMD(0x21);
-    for (count = 0; count < 15; count++)
-    {
-        EPD_W21_WriteDATA(lut_w[count]);
-    }
-
-    EPD_W21_WriteCMD(0x22);
-    for (count = 0; count < 15; count++)
-    {
-        EPD_W21_WriteDATA(lut_b[count]);
-    }
-
-    EPD_W21_WriteCMD(0x23);
-    for (count = 0; count < 15; count++)
-    {
-        EPD_W21_WriteDATA(lut_g1[count]);
-    }
-
-    EPD_W21_WriteCMD(0x24);
-    for (count = 0; count < 15; count++)
-    {
-        EPD_W21_WriteDATA(lut_g2[count]);
-    }
-}
-
-void lut_red(void)
-{
-    unsigned int count;
-    EPD_W21_WriteCMD(0x25);
-    for (count = 0; count < 15; count++)
-    {
-        EPD_W21_WriteDATA(lut_vcom1[count]);
-    }
-
-    EPD_W21_WriteCMD(0x26);
-    for (count = 0; count < 15; count++)
-    {
-        EPD_W21_WriteDATA(lut_red0[count]);
-    }
-
-    EPD_W21_WriteCMD(0x27);
-    for (count = 0; count < 15; count++)
-    {
-        EPD_W21_WriteDATA(lut_red1[count]);
-    }
-}
-
 void EPD_CheckStatus(void)
 {
     while (!gpiohs_get_pin(SPI_EINK_BL_GPIO_NUM))
@@ -129,8 +72,6 @@ void EPD_CheckStatus(void)
 
 void EPD_DisplayInit(void)
 {
-    EPD_io_mux_init();
-
     gpiohs_set_pin(SPI_EINK_RST_GPIO_NUM, GPIO_PV_LOW);
     msleep(100);
     gpiohs_set_pin(SPI_EINK_RST_GPIO_NUM, GPIO_PV_HIGH);
@@ -141,37 +82,34 @@ void EPD_DisplayInit(void)
 
     EPD_W21_WriteCMD(0x01);
     EPD_W21_WriteDATA(0x07); //设置高低电压
-    EPD_W21_WriteDATA(0x00);
-    EPD_W21_WriteDATA(0x0B); //红色电压设置，值越大红色越深
-    EPD_W21_WriteDATA(0x00);
+    EPD_W21_WriteDATA(0x07);
+    EPD_W21_WriteDATA(0x3f); //红色电压设置，值越大红色越深
+    EPD_W21_WriteDATA(0x3f);
 
-    EPD_W21_WriteCMD(0x06); //boost设定
-    EPD_W21_WriteDATA(0x07);
-    EPD_W21_WriteDATA(0x07);
-    EPD_W21_WriteDATA(0x07);
-
-    EPD_W21_WriteCMD(0x04); //上电
+    EPD_W21_WriteCMD(0x04); //POWER ON
     EPD_CheckStatus();      //查看芯片状态
-
+    
     EPD_W21_WriteCMD(0X00);
-    EPD_W21_WriteDATA(0xcf); //选择最大分辨率
-
-    EPD_W21_WriteCMD(0X50);
-    EPD_W21_WriteDATA(0x37);
-
-    EPD_W21_WriteCMD(0x30); //PLL设定
-    EPD_W21_WriteDATA(0x39);
+    EPD_W21_WriteDATA(0x1f); //选择最大分辨率
 
     EPD_W21_WriteCMD(0x61);  //像素设定
-    EPD_W21_WriteDATA(0xC8); //200像素
-    EPD_W21_WriteDATA(0x00); //200像素
-    EPD_W21_WriteDATA(0xC8);
+    EPD_W21_WriteDATA(EPD_WIDTH >> 8); //648像素
+    EPD_W21_WriteDATA(EPD_WIDTH);
+    EPD_W21_WriteDATA(EPD_HEIGHT >> 8); //200像素
+    EPD_W21_WriteDATA(EPD_HEIGHT);
 
-    EPD_W21_WriteCMD(0x82); //vcom设定
-    EPD_W21_WriteDATA(0x18);
+    EPD_W21_WriteCMD(0x15);
+    EPD_W21_WriteDATA(0x00);
 
-    lut_bw();
-    lut_red();
+    EPD_W21_WriteCMD(0X50);			//VCOM AND DATA INTERVAL SETTING
+	EPD_W21_WriteDATA(0x10);
+	EPD_W21_WriteDATA(0x07);
+
+    EPD_W21_WriteCMD(0X60);			//TCON SETTING
+	EPD_W21_WriteDATA(0x22);
+
+    // lut_bw();
+    // lut_red();
 }
 
 /////////////////////////////Enter deep sleep mode////////////////////////
@@ -222,13 +160,13 @@ void EPD_FullDisplay(const unsigned char *old_data, const unsigned char *new_dat
     if (mode == 0) //mode0:Refresh picture1
     {
         EPD_W21_WriteCMD(0x10);
-        for (i = 0; i < 10000; i++)
+        for (i = 0; i < 38880; i++)
         {
-            EPD_W21_WriteDATA(0xff);
+            EPD_W21_WriteDATA(WHITE);
         }
         msleep(2);
         EPD_W21_WriteCMD(0x13);
-        for (i = 0; i < 5000; i++)
+        for (i = 0; i < 38880; i++)
         {
             EPD_W21_WriteDATA(new_data[i]);
         }
@@ -262,7 +200,7 @@ void EPD_FullDisplay(const unsigned char *old_data, const unsigned char *new_dat
         EPD_W21_WriteCMD(0x13);
         for (i = 0; i < 5000; i++)
         {
-            EPD_W21_WriteDATA(0xff);
+            EPD_W21_WriteDATA(WHITE);
         }
         msleep(2);
     }
