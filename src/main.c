@@ -18,7 +18,6 @@
 #include "board_config.h"
 #include "syslog.h"
 
-#include "epd/demo.h"
 #include "epd/epd.h"
 #include "fpioa.h"
 #include "gpiohs.h"
