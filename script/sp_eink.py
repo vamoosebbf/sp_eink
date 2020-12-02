@@ -69,7 +69,7 @@ class EPD:
         self._command(0x01)
         self._data(0x07)  # 设置高低电压
         self._data(0x00)
-        self._data(0x0B)  # 红色电压设置，值越大红色越深
+        self._data(0x0f)  # 红色电压设置，值越大红色越深
         self._data(0x00)
         self._command(0x06)
         self._data(0x07)
@@ -225,5 +225,5 @@ if __name__ == "__main__":
     img_bw.draw_circle(80, 80, 30)
     img_bw.draw_rectangle(10, 10, 60, 60)
 
-    epd.display(img_r)
+    epd.display(img_r, img_bw)
     epd.sleep()
