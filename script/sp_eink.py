@@ -8,7 +8,6 @@ EPD_WIDTH = const(200)
 EPD_HEIGHT = const(200)
 BUSY = const(1)  # 1=busy, 0=idle
 
-
 class EPD:
     def __init__(self, spi, cs, dc, rst, busy, width, height):
         self.spi = spi
@@ -150,9 +149,6 @@ class EPD:
                 return True
         print('self.busy', self.busy.value())
         return False
-
-    def set_lut(self, lut):
-        self._command(WRITE_LUT_REGISTER, lut)
 
     def lut_bw(self):
         self._command(0x20, EPD.lut_vcom0)
