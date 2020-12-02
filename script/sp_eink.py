@@ -81,7 +81,7 @@ class EPD:
             pass
 
         self._command(0X00)
-        self._data(0xef)  # 选择最大分辨率
+        self._data(0xcf)  # 选择最大分辨率
 
         self._command(0X50)
         self._data(0x37)
