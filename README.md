@@ -139,7 +139,6 @@ AT instruction list
   ```python
   epd = EPD(spi1, cs, dc, rst, busy)
 
-  epd.init()
   img = image.Image()
   img = img.resize(200, 200)
 

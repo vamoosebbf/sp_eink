@@ -139,7 +139,6 @@ SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥
   ```python
   epd = EPD(spi1, cs, dc, rst, busy)
 
-  epd.init()
   img = image.Image()
   img = img.resize(200, 200)
 
