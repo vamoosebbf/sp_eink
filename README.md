@@ -113,7 +113,7 @@ AT instruction list
 * Process
 
   1. initializatin
-  2. create a image and fill it
+  2. create an image and fill it
   3. send image and refresh
 
 * C
