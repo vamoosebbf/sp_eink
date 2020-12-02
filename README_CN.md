@@ -46,7 +46,7 @@ SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥
 
 将原理图对应的 IO 口配置为 SPI 功能
 
-* C 
+* C
 
   ```c
   fpioa_set_function(SPI_EINK_CS_PIN_NUM, FUNC_SPI1_SS0);   // SPI_EINK_CS_PIN_NUM: 20; 
@@ -67,7 +67,7 @@ SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥
   gpiohs_set_pin_edge(SPI_EINK_BL_PIN_NUM, GPIO_PE_BOTH);
   ```
 
-* MaixPy 
+* MaixPy
 
   ```python
   fm.register(20, fm.fpioa.GPIOHS20, force=True) # SPI_EINK_SS_PIN_NUM: 20;
@@ -83,13 +83,13 @@ SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥
 
 ### SPI 初始化
 
-* C 
+* C
 
   ```c
   spi_init(1, SPI_WORK_MODE_0, SPI_FF_STANDARD, DATALENGTH, 0);
   ```
 
-* MaixPy 
+* MaixPy
 
   ```python
   spi1 = SPI(SPI.SPI1, mode=SPI.MODE_MASTER, baudrate=600 * 1000,
@@ -116,7 +116,7 @@ SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥
   2. 创建 Image 并填充
   3. 发送图像并刷新
 
-* C 
+* C
 
   ```c
   EPD_DisplayInit(); //EPD init
@@ -134,7 +134,7 @@ SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥
   EPD_FullDisplay(BlackImage, BlackImage, 0);                  //display image
   ```
   
-* MaixPy 
+* MaixPy
 
   ```python
   epd = EPD(spi1, cs, dc, rst, busy)
