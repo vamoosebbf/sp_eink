@@ -98,7 +98,7 @@ Configure the IO port corresponding to the schematic diagram as SPI function
 
 ## SP_EINK configuration
 
-### AT instruction list
+AT instruction list
 
 | Instruction |       description        |
 | :---------: | :----------------------: |
@@ -108,7 +108,7 @@ Configure the IO port corresponding to the schematic diagram as SPI function
 
 *See [GDEW0154M09.pdf](doc/GDEW0154M09.pdf) for more information*
 
-### Method of application
+## Method of application
 
 * Process
 
@@ -169,6 +169,48 @@ Configure the IO port corresponding to the schematic diagram as SPI function
 * MaixPy
 
   <img src="img/sp_eink_py.png" alt="sp_eink_py" height="250" />
+
+## Transplant
+
+The following parameters need to be modified
+
+* C
+  
+  ```c
+    // board_config.h
+    #define SPI_INDEX 1
+    #define SPI_SCLK_RATE 600 * 1000
+    #define SPI_CHIP_SELECT_NSS 0 //SPI_CHIP_SELECT_0
+
+    #define SPI_EINK_CS_PIN_NUM 20
+    #define SPI_EINK_SCK_PIN_NUM 21
+    #define SPI_EINK_MOSI_PIN_NUM 8
+
+    #define SPI_EINK_DC_PIN_NUM 15
+    #define SPI_EINK_BL_PIN_NUM 6
+    #define SPI_EINK_RST_PIN_NUM 7
+
+    #define SPI_EINK_DC_GPIO_NUM 15
+    #define SPI_EINK_BL_GPIO_NUM 6
+    #define SPI_EINK_RST_GPIO_NUM 7
+  ```
+
+* MaixPy
+  
+  ```python
+  ################### config ###################
+    EPD_WIDTH = const(200)
+    EPD_HEIGHT = const(200)
+    SPI_EINK_NUM = SPI.SPI1
+    SPI_EINK_DC_PIN_NUM = const(15)
+    SPI_EINK_BUSY_PIN_NUM = const(6)
+    SPI_EINK_RST_PIN_NUM = const(7)
+    SPI_EINK_CS_PIN_NUM = const(20)
+    SPI_EINK_SCK_PIN_NUM = const(21)
+    SPI_EINK_MOSI_PIN_NUM = const(8)
+    SPI_EINK_FREQ_KHZ = const(600)
+  ##############################################
+  ```
 
 ## LICENSE
 

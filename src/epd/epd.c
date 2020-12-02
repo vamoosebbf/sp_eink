@@ -26,13 +26,14 @@ void EPD_io_mux_init(void)
 
     gpiohs_set_drive_mode(SPI_EINK_BL_PIN_NUM, GPIO_DM_INPUT_PULL_UP);
     gpiohs_set_pin_edge(SPI_EINK_BL_PIN_NUM, GPIO_PE_BOTH);
+
+    spi_init(SPI_INDEX, SPI_WORK_MODE_0, SPI_FF_STANDARD, DATALENGTH, 0);
 }
 
 static void spi_write_reg(uint8_t reg_addr, uint8_t data)
 {
     uint8_t cmd[2] = {reg_addr, data};
 
-    spi_init(SPI_INDEX, SPI_WORK_MODE_0, SPI_FF_STANDARD, DATALENGTH, 0);
     spi_send_data_standard(SPI_INDEX, SPI_CHIP_SELECT_NSS, cmd, 2, NULL, 0);
 }
 
@@ -40,7 +41,6 @@ static void spi_read_reg(uint8_t reg_addr, uint8_t *reg_data)
 {
     uint8_t cmd[1] = {reg_addr};
 
-    spi_init(SPI_INDEX, SPI_WORK_MODE_0, SPI_FF_STANDARD, DATALENGTH, 0);
     spi_receive_data_standard(SPI_INDEX, SPI_CHIP_SELECT_NSS, cmd, 1, reg_data, 1);
 }
 
@@ -49,7 +49,6 @@ static void EPD_W21_WriteCMD(uint8_t command)
     uint8_t cmd[1] = {command};
     gpiohs_set_pin(SPI_EINK_DC_GPIO_NUM, GPIO_PV_LOW);
 
-    spi_init(SPI_INDEX, SPI_WORK_MODE_0, SPI_FF_STANDARD, DATALENGTH, 0);
     spi_send_data_standard(SPI_INDEX, SPI_CHIP_SELECT_NSS, cmd, 1, NULL, 0);
 
     gpiohs_set_pin(SPI_EINK_DC_GPIO_NUM, GPIO_PV_HIGH);
@@ -60,7 +59,6 @@ static void EPD_W21_WriteDATA(uint8_t data)
     uint8_t cmd[1] = {data};
     gpiohs_set_pin(SPI_EINK_DC_GPIO_NUM, GPIO_PV_HIGH);
 
-    spi_init(SPI_INDEX, SPI_WORK_MODE_0, SPI_FF_STANDARD, DATALENGTH, 0);
     spi_send_data_standard(SPI_INDEX, SPI_CHIP_SELECT_NSS, cmd, 1, NULL, 0);
 }
 

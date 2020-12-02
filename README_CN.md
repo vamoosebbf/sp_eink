@@ -98,7 +98,7 @@ SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥
 
 ## SP_EINK 配置
 
-### 基本指令列表
+基本指令列表
 
 | 指令  |       功能       |
 | :---: | :--------------: |
@@ -108,7 +108,7 @@ SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥
 
 *更多指令信息参考[GDEW0154M09.pdf](doc/GDEW0154M09.pdf)*
 
-### 使用方式
+## 使用方式
 
 * 流程
 
@@ -160,7 +160,7 @@ SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥
 
 *MaixPy固件建议自行从最新源码编译*
 
-### 运行结果
+## 运行结果
 
 * C
 
@@ -169,6 +169,46 @@ SP_EINK 模块采用 GDEW0154M09，这是一款 1.54”，SPI 接口控制，拥
 * MaixPy
 
   <img src="img/sp_eink_py.png" height="250" />
+
+## 移植
+
+修改以下参数即可
+
+* C
+  
+  ```c
+    // board_config.h
+    #define SPI_INDEX 1
+    #define SPI_SCLK_RATE 600 * 1000
+    #define SPI_CHIP_SELECT_NSS 0 //SPI_CHIP_SELECT_0
+
+    #define SPI_EINK_CS_PIN_NUM 20
+    #define SPI_EINK_SCK_PIN_NUM 21
+    #define SPI_EINK_MOSI_PIN_NUM 8
+
+    #define SPI_EINK_DC_PIN_NUM 15
+    #define SPI_EINK_BL_PIN_NUM 6
+    #define SPI_EINK_RST_PIN_NUM 7
+
+    #define SPI_EINK_DC_GPIO_NUM 15
+    #define SPI_EINK_BL_GPIO_NUM 6
+    #define SPI_EINK_RST_GPIO_NUM 7
+  ```
+
+* MaixPy
+  
+  ```python
+  ################### config ###################
+    SPI_EINK_NUM = SPI.SPI1
+    SPI_EINK_DC_PIN_NUM = const(15)
+    SPI_EINK_BUSY_PIN_NUM = const(6)
+    SPI_EINK_RST_PIN_NUM = const(7)
+    SPI_EINK_CS_PIN_NUM = const(20)
+    SPI_EINK_SCK_PIN_NUM = const(21)
+    SPI_EINK_MOSI_PIN_NUM = const(8)
+    SPI_EINK_FREQ_KHZ = const(600)
+  ##############################################
+  ```
 
 ## 许可
 

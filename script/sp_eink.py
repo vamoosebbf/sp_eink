@@ -99,22 +99,43 @@ class EPD:
         self.lut_bw()
         self.lut_red()
 
-    def display(self, img):
-        self._command(0x10)  # write "B/W" data to SRAM. 0x00:black
-        for i in range(10000):
-            self._data(0xff)
-
+    # brief: display image on eink
+    # img_r: red image
+    # img_bw: b/w image
+    def display(self, img_r, img_bw = None):
         img1 = image.Image()  # handle image
         img1 = img1.resize(self.width, self.height)
-        img1.draw_image(img, 0, 0)
+
+        if(img_bw == None):
+            self._command(0x10)  # write "B/W" data to SRAM. 0x00:black
+            for i in range(10000):
+                self._data(0xff)
+        else:
+            img1.draw_image(img_bw, 0, 0)
+            # Parameter 'fov' is to slove data loss issues
+            img1.rotation_corr(x_rotation=180, fov=2)
+            img_bytes = img1.to_bytes()  # That's "self.width*self.height*2" bytes
+            self._command(0x10)  # write "B/W" data to SRAM 0x00:black,0xff:white
+            for i in range(0, self.width*self.height*2, 16):
+                b = 0
+                for j in range(0, 8, 2):
+                    if img_bytes[i+j] or img_bytes[i+j+1]:
+                        b = b | (0xc0 >> j)
+                self._data(~b)
+                b = 0
+                for j in range(8, 16, 2):
+                    if img_bytes[i+j] or img_bytes[i+j+1]:
+                        b = b | (0xc0 >> j-8)
+                self._data(~b)
+
+        img1.draw_image(img_r, 0, 0)
         # Parameter 'fov' is to slove data loss issues
         img1.rotation_corr(x_rotation=180, fov=2)
         img_bytes = img1.to_bytes()  # That's "self.width*self.height*2" bytes
-
         self._command(0x13)  # write "RED" data to SRAM 0x00:red,0xff:white
         for i in range(0, self.width*self.height*2, 16):
             b = 0
-            for j in range(0, 15, 2):
+            for j in range(0, 16, 2):
                 if img_bytes[i+j] or img_bytes[i+j+1]:
                     b = b | (0x80 >> j//2)
             self._data(~b)
@@ -157,50 +178,55 @@ class EPD:
 
 
 if __name__ == "__main__":
-    import utime
     from Maix import GPIO
-    from board import board_info
     from fpioa_manager import fm
-
     from machine import SPI
-    import lcd
 
-    # #  SPMOD Interface
-    # #  # [4|5] [7  |VCC] [RST|3V3]
-    # #  # [3|6] [15 | 21] [D/C|SCK]
-    # #  # [2|7] [20 |  8] [CS |SI ]
-    # #  # [1|8] [GND|  6] [GND|BL ]
+    #  MaixCube | SPMOD
+    # [7  |VCC] [RST|3V3]
+    # [15 | 21] [D/C|SCK]
+    # [20 |  8] [CS |SI ]
+    # [GND|  6] [GND|BL ]
+    ################### config ###################
+    SPI_EINK_NUM = SPI.SPI1
+    SPI_EINK_DC_PIN_NUM = const(15)
+    SPI_EINK_BUSY_PIN_NUM = const(6)
+    SPI_EINK_RST_PIN_NUM = const(7)
+    SPI_EINK_CS_PIN_NUM = const(20)
+    SPI_EINK_SCK_PIN_NUM = const(21)
+    SPI_EINK_MOSI_PIN_NUM = const(8)
+    SPI_EINK_FREQ_KHZ = const(600)
+    ##############################################
 
-    # #define SPI_EINK_CS_PIN_NUM 20
-    # #define SPI_EINK_SCK_PIN_NUM 21
-    # #define SPI_EINK_MOSI_PIN_NUM 8
-    spi1 = SPI(SPI.SPI1, mode=SPI.MODE_MASTER, baudrate=600 * 1000,
-               polarity=0, phase=0, bits=8, firstbit=SPI.MSB, sck=21, mosi=8)
+    spi1 = SPI(SPI_EINK_NUM, mode=SPI.MODE_MASTER, baudrate=SPI_EINK_FREQ_KHZ * 1000,
+               polarity=0, phase=0, bits=8, firstbit=SPI.MSB, sck=SPI_EINK_SCK_PIN_NUM, mosi=SPI_EINK_MOSI_PIN_NUM)
 
-    # define SPI_EINK_SS_PIN_NUM 20
-    fm.register(20, fm.fpioa.GPIOHS20, force=True)
-    # define SPI_EINK_DC_PIN_NUM 15
-    fm.register(15, fm.fpioa.GPIOHS15, force=True)
-    # define SPI_EINK_BUSY_PIN_NUM 6
-    fm.register(6, fm.fpioa.GPIOHS6, force=True)
-    # define SPI_EINK_RST_PIN_NUM 7
-    fm.register(7, fm.fpioa.GPIOHS7, force=True)
+    fm.register(SPI_EINK_CS_PIN_NUM, fm.fpioa.GPIOHS20, force=True)
+    fm.register(SPI_EINK_DC_PIN_NUM, fm.fpioa.GPIOHS15, force=True)
+    fm.register(SPI_EINK_BUSY_PIN_NUM, fm.fpioa.GPIOHS6, force=True)
+    fm.register(SPI_EINK_RST_PIN_NUM, fm.fpioa.GPIOHS7, force=True)
 
     cs = GPIO(GPIO.GPIOHS20, GPIO.OUT)
     dc = GPIO(GPIO.GPIOHS15, GPIO.OUT)
     busy = GPIO(GPIO.GPIOHS6, GPIO.IN, GPIO.PULL_DOWN)
     rst = GPIO(GPIO.GPIOHS7, GPIO.OUT)
 
-    lcd.init()
     epd = EPD(spi1, cs, dc, rst, busy, EPD_WIDTH, EPD_HEIGHT)
     epd.init()
 
-    img = image.Image()
-    img = img.resize(200, 200)
-    img.draw_line(0, 0, 100, 100)
-    img.draw_circle(50, 50, 20)
-    img.draw_rectangle(80, 80, 30, 30)
+    # red image 
+    img_r = image.Image()
+    img_r = img_r.resize(EPD_WIDTH, EPD_HEIGHT)
+    img_r.draw_line(0, 0, 100, 100)
+    img_r.draw_circle(50, 50, 20)
+    img_r.draw_rectangle(80, 80, 30, 30)
 
-    epd.display(img)
+    ## bw image
+    img_bw = image.Image()
+    img_bw = img_bw.resize(EPD_WIDTH, EPD_HEIGHT)
+    img_bw.draw_line(100, 50, 200, 100)
+    img_bw.draw_circle(80, 80, 30)
+    img_bw.draw_rectangle(10, 10, 60, 60)
+
+    epd.display(img_r)
     epd.sleep()
-    lcd.display(img)
