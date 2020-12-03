@@ -215,6 +215,6 @@ See [LICENSE](LICENSE.md) file
 
 ## Othre information
 
-| Version |   Editor   |
-| :-----: | :--------: |
-|  v0.1   | vamoosebbf |
+| Version |   Editor   |   Date    |
+| :-----: | :--------: | :-------: |
+|  v1.0   | vamoosebbf | 2020.12.2 |
