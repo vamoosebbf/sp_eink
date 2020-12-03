@@ -4,12 +4,12 @@ import ustruct
 import image
 
 # Display resolution
-EPD_WIDTH = const(200)
-EPD_HEIGHT = const(200)
-EPD_ROTATION = const(180) # 0, 90, 180, 270
+SPEINK_WIDTH = const(200)
+SPEINK_HEIGHT = const(200)
+SPEINK_ROTATION = const(180) # 0, 90, 180, 270
 BUSY = const(1)  # 1=busy, 0=idle
 
-class EPD:
+class SPEINK:
     def __init__(self, spi, cs, dc, rst, busy, width, height, rotation):
         self.spi = spi
         self.cs = cs
@@ -153,16 +153,16 @@ class EPD:
         return False
 
     def lut_bw(self):
-        self._command(0x20, EPD.lut_vcom0)
-        self._command(0x21, EPD.lut_w)
-        self._command(0x22, EPD.lut_b)
-        self._command(0x23, EPD.lut_g1)
-        self._command(0x24, EPD.lut_g2)
+        self._command(0x20, SPEINK.lut_vcom0)
+        self._command(0x21, SPEINK.lut_w)
+        self._command(0x22, SPEINK.lut_b)
+        self._command(0x23, SPEINK.lut_g1)
+        self._command(0x24, SPEINK.lut_g2)
 
     def lut_red(self):
-        self._command(0x25, EPD.lut_vcom1)
-        self._command(0x26, EPD.lut_red0)
-        self._command(0x27, EPD.lut_red1)
+        self._command(0x25, SPEINK.lut_vcom1)
+        self._command(0x26, SPEINK.lut_red0)
+        self._command(0x27, SPEINK.lut_red1)
 
     # enter deep sleep A0=1, A0=0 power on
     def sleep(self):
@@ -209,19 +209,19 @@ if __name__ == "__main__":
     busy = GPIO(GPIO.GPIOHS6, GPIO.IN, GPIO.PULL_DOWN)
     rst = GPIO(GPIO.GPIOHS7, GPIO.OUT)
 
-    epd = EPD(spi1, cs, dc, rst, busy, EPD_WIDTH, EPD_HEIGHT, EPD_ROTATION)
+    epd = SPEINK(spi1, cs, dc, rst, busy, SPEINK_WIDTH, SPEINK_HEIGHT, SPEINK_ROTATION)
     epd.init()
 
     # red image 
     img_r = image.Image()
-    img_r = img_r.resize(EPD_WIDTH, EPD_HEIGHT)
+    img_r = img_r.resize(SPEINK_WIDTH, SPEINK_HEIGHT)
     img_r.draw_line(0, 0, 100, 100)
     img_r.draw_circle(50, 50, 20)
     img_r.draw_rectangle(80, 80, 30, 30)
 
     ## bw image
     img_bw = image.Image()
-    img_bw = img_bw.resize(EPD_WIDTH, EPD_HEIGHT)
+    img_bw = img_bw.resize(SPEINK_WIDTH, SPEINK_HEIGHT)
     img_bw.draw_line(100, 50, 200, 100)
     img_bw.draw_circle(80, 80, 30)
     img_bw.draw_rectangle(10, 10, 60, 60)
