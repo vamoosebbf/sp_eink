@@ -10,7 +10,7 @@ EPD_ROTATION = const(180) # 0, 90, 180, 270
 BUSY = const(1)  # 1=busy, 0=idle
 
 class EPD:
-    def __init__(self, spi, cs, dc, rst, busy, width, height):
+    def __init__(self, spi, cs, dc, rst, busy, width, height, rotation):
         self.spi = spi
         self.cs = cs
         self.dc = dc
@@ -21,7 +21,7 @@ class EPD:
         self.rst.value(1)
         self.width = width
         self.height = height
-        self.init()
+        self.rotation = rotation
 
     lut_vcom0 = bytearray(
         b'\x0E\x14\x01\x0A\x06\x04\x0A\x0A\x0F\x03\x03\x0C\x06\x0A\x00')
@@ -114,7 +114,7 @@ class EPD:
         else:
             img1.draw_image(img_bw, 0, 0)
             # Parameter 'fov' is to slove data loss issues
-            img1.rotation_corr(x_rotation=EPD_ROTATION, fov=2)
+            img1.rotation_corr(x_rotation=self.rotation, fov=2)
             img_bytes = img1.to_bytes()  # That's "self.width*self.height*2" bytes
             self._command(0x10)  # write "B/W" data to SRAM 0x00:black,0xff:white
             for i in range(0, self.width*self.height*2, 16):
@@ -209,7 +209,8 @@ if __name__ == "__main__":
     busy = GPIO(GPIO.GPIOHS6, GPIO.IN, GPIO.PULL_DOWN)
     rst = GPIO(GPIO.GPIOHS7, GPIO.OUT)
 
-    epd = EPD(spi1, cs, dc, rst, busy, EPD_WIDTH, EPD_HEIGHT)
+    epd = EPD(spi1, cs, dc, rst, busy, EPD_WIDTH, EPD_HEIGHT, EPD_ROTATION)
+    epd.init()
 
     # red image 
     img_r = image.Image()

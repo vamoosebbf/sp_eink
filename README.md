@@ -137,17 +137,14 @@ AT instruction list
 * MaixPy
 
   ```python
-  epd = EPD(spi1, cs, dc, rst, busy)
+  epd = EPD(spi1, cs, dc, rst, busy, EPD_WIDTH, EPD_HEIGHT, EPD_ROTATION)
+  epd.init()
 
   img = image.Image()
   img = img.resize(200, 200)
-
   img.draw_line(0, 0, 100, 100)
-  img.draw_circle(50, 50, 20)
-  img.draw_rectangle(80, 80, 30, 30)
 
   epd.display(img)
-  
   ```
 
 ## Runtime enviroments
