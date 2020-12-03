@@ -198,8 +198,6 @@ The following parameters need to be modified
   
   ```python
   ################### config ###################
-    EPD_WIDTH = const(200)
-    EPD_HEIGHT = const(200)
     SPI_EINK_NUM = SPI.SPI1
     SPI_EINK_DC_PIN_NUM = const(15)
     SPI_EINK_BUSY_PIN_NUM = const(6)
